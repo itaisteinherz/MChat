@@ -51,6 +51,7 @@
 		6E06D4631D465A9800A6A3A4 /* KeychainOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeychainOptions.swift; path = SwiftKeychainWrapper/KeychainOptions.swift; sourceTree = "<group>"; };
 		6E06D4641D465A9800A6A3A4 /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = KeychainWrapper.swift; path = SwiftKeychainWrapper/KeychainWrapper.swift; sourceTree = "<group>"; };
 		6E06D4661D465A9800A6A3A4 /* SwiftKeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SwiftKeychainWrapper.h; path = SwiftKeychainWrapper/SwiftKeychainWrapper.h; sourceTree = "<group>"; };
+		6E0A8E291D5FCB2500427ABE /* SocketIO-iOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SocketIO-iOS.h"; path = "SocketIO/SocketIO-iOS.h"; sourceTree = "<group>"; };
 		6E5645EA1D52A46A0056548C /* SocketAckEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketAckEmitter.swift; path = SocketIO/SocketAckEmitter.swift; sourceTree = "<group>"; };
 		6E5645EB1D52A46A0056548C /* SocketAckManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketAckManager.swift; path = SocketIO/SocketAckManager.swift; sourceTree = "<group>"; };
 		6E5645EC1D52A46A0056548C /* SocketAnyEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketAnyEvent.swift; path = SocketIO/SocketAnyEvent.swift; sourceTree = "<group>"; };
@@ -153,6 +154,7 @@
 		6EC9BD921D4BBA0D0049F215 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				6E0A8E291D5FCB2500427ABE /* SocketIO-iOS.h */,
 				6E5645EA1D52A46A0056548C /* SocketAckEmitter.swift */,
 				6E5645EB1D52A46A0056548C /* SocketAckManager.swift */,
 				6E5645EC1D52A46A0056548C /* SocketAnyEvent.swift */,
