@@ -35,6 +35,31 @@ class SocketServiceManager: SocketIOClient {
     
     // MARK: - Object functions
     
+    func getConnectedPeers(requestHandler: (() -> Void), recieveHandler: (Int -> Void)) {
+        if self.status == .Connected {
+            self.emit("get_connected_peers", [
+                "UUID": user.UUID,
+                "passphrase": user.passphrase
+            ])
+            requestHandler()
+        } else {
+            self.once("connect", callback: { data, ack in
+                self.emit("get_connected_peers", [
+                    "UUID": self.user.UUID,
+                    "passphrase": self.user.passphrase
+                ])
+                requestHandler()
+            })
+        }
+        
+        if handledEvents.indexOf("resolved_peers") == nil {
+            self.on("resolved_peers") { data, ack in
+                recieveHandler(data[0] as! Int)
+            }
+            handledEvents.append("resolved_peers")
+        }
+    }
+    
     func getNicknameForUUID(UUID: String, requestHandler: (() -> Void), recieveHandler: ([String: String] -> Void)) {
         if self.status == .Connected {
             self.emit("get_nickname_for_uuid", UUID)

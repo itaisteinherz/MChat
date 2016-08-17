@@ -15,7 +15,6 @@ class NicknameViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
     }
 
@@ -51,10 +50,12 @@ class NicknameViewController: UIViewController, UITextFieldDelegate {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if segue.identifier == "NicknameSegue" {
-            if let dest = segue.destinationViewController as? ViewController {
-                dest.nickname = nicknameTextField.text!
-                dest.hadAskedForNickname = true
+        if let navVC = segue.destinationViewController as? NavigationController {
+            if segue.identifier == "NicknameSegue" {
+                if let dest = navVC.topViewController as? MessagesViewController {
+                    dest.nickname = nicknameTextField.text!
+                    dest.hadAskedForNickname = true
+                }
             }
         }
     }
