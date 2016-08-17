@@ -9,61 +9,26 @@
 import UIKit
 import MultipeerConnectivity
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MCServiceManagerDelegate {
-    
-    var wasActive = false
-    
-    var hadAskedForNickname: Bool = false
-    
-    var nickname: String?
-    var user: User?
+class PeersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, MCServiceManagerDelegate {
     
     @IBOutlet weak var availablePeers: UITableView!
+    
+    var wasActive = false
     
     var socket: SocketServiceManager? = nil
     
     var mcService: MCServiceManager? = nil
     var peers: [String: String] = Dictionary()
     
-    let keychain = KeychainServiceManager()
-    
-    // MARK: - Creating the user if first run or loading the user if isn't
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let hasCreatedUser = keychain.hasCreatedUser()
+        wasActive = true
+        mcService?.delegate = self
         
-        if hasCreatedUser == false && self.hadAskedForNickname {
-            user = User(nickname: self.nickname!)
-            keychain.createUser(user!)
-        } else if hasCreatedUser {
-            user = keychain.getUser()
-        }
-        
-        if let user = user where (self.hadAskedForNickname || hasCreatedUser) {
-            wasActive = true
-            
-            socket = SocketServiceManager(URL: "http://192.168.1.102:3000", User: user) // Need to implement better solution for inputting the nickname recieve handler, such as sending it as an input for a seperate function or something else
-            
-            mcService = MCServiceManager(UUID: user.UUID)
-            mcService!.delegate = self
-            
-            print("User is \(user)")
-            
-        }
-    }
-    
-    // MARK: - Checking for first run and asking for nickname
-    
-    override func viewDidAppear(animated: Bool) {
-        let hasCreatedUser = keychain.hasCreatedUser()
-        
-        if !hasCreatedUser && !self.hadAskedForNickname {
-            let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("Nickname")
-            self.presentViewController(vc, animated: false, completion: nil)
-            return
+        for peer in Array(peers.values) {
+            socket?.getNicknameForUUID(peer, requestHandler: handleSentNicknameRequest, recieveHandler: handleRecievedNickname)
         }
     }
 
@@ -105,11 +70,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         
         peers[peer.displayName] = peer.displayName
+        availablePeers.reloadData()
         
         socket?.getNicknameForUUID(peer.displayName, requestHandler: handleSentNicknameRequest, recieveHandler: handleRecievedNickname)
         socket?.availablePeersChanged(peer.displayName, isAddition: true, availablePeers: Array(peers.keys))
-        
-        availablePeers.reloadData()
     }
     
     func lostPeer(peer: MCPeerID) {
@@ -119,9 +83,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             peers.removeAtIndex(indexOfPeer)
         }
         
-        socket?.availablePeersChanged(peer.displayName, isAddition: false, availablePeers: Array(peers.keys))
-        
         availablePeers.reloadData()
+        socket?.availablePeersChanged(peer.displayName, isAddition: false, availablePeers: Array(peers.keys))
     }
     
     // MARK: - SocketServiceManager functions
@@ -131,9 +94,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func handleRecievedNickname(data: [String: String]) {
-        peers[data["UUID"]!] = data["nickname"]
-        availablePeers.reloadData()
+        if let peer = data["UUID"] where peers[peer] == peer  {
+            peers[data["UUID"]!] = data["nickname"]
+            availablePeers.reloadData()
+        }
     }
+
     
 }
 
