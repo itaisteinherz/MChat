@@ -77,6 +77,8 @@
 		6E318D301DE6079700D7905E = {
 			isa = PBXGroup;
 			children = (
+				6E318D6D1DE60EF600D7905E /* SwiftKeychain */,
+				6E318D6C1DE60EEF00D7905E /* SocketIO */,
 				6E318D3B1DE6079700D7905E /* MChat */,
 				6E318D501DE6079700D7905E /* MChatTests */,
 				6E318D5B1DE6079700D7905E /* MChatUITests */,
@@ -123,6 +125,20 @@
 				6E318D5E1DE6079700D7905E /* Info.plist */,
 			);
 			path = MChatUITests;
+			sourceTree = "<group>";
+		};
+		6E318D6C1DE60EEF00D7905E /* SocketIO */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = SocketIO;
+			sourceTree = "<group>";
+		};
+		6E318D6D1DE60EF600D7905E /* SwiftKeychain */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = SwiftKeychain;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -514,6 +530,7 @@
 				6E318D631DE6079700D7905E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6E318D641DE6079700D7905E /* Build configuration list for PBXNativeTarget "MChatTests" */ = {
 			isa = XCConfigurationList;
@@ -522,6 +539,7 @@
 				6E318D661DE6079700D7905E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6E318D671DE6079700D7905E /* Build configuration list for PBXNativeTarget "MChatUITests" */ = {
 			isa = XCConfigurationList;
@@ -530,6 +548,7 @@
 				6E318D691DE6079700D7905E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
