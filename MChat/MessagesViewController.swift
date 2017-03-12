@@ -13,6 +13,9 @@ class MessagesViewController: UIViewController {
     
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var buttonConstraint: NSLayoutConstraint!
+
+    @IBOutlet weak var connectedPeers: UILabel!
+    @IBOutlet weak var status: UIImageView!
     
     @IBOutlet weak var messagesTableView: UITableView!
     @IBOutlet weak var messageContents: UITextField!
@@ -24,6 +27,8 @@ class MessagesViewController: UIViewController {
     var socket: SocketManager? = nil
     var mcAdvertiser: MCAdvertiser? = nil
     var mcBrowser: MCBrowser? = nil
+    
+    var keychain: KeychainManager? = KeychainManager(service: "com.itaist.mchat-credentials")
     
     var availablePeers: [String] = Array()
     var messages: [[String: String]] = Array()
@@ -40,23 +45,44 @@ class MessagesViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWasHidden), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         // Initialize user, socket, mcBrowser and mcAdvertiser
-        
         if let parentController = parent as? TabBarViewController {
-            nickname = parentController.nickname
-            
-            user = User(nickname: nickname)
-
-            socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, recievedMessageHandler: handleMessage)
-            
-            parentController.socket = socket
-            parentController.user = user
-            
-            // MCBrowser
-            mcBrowser = MCBrowser(name: (user?.UUID)!)
-            mcBrowser?.delegate = self
-            
-            // MCAdvertiser
-            mcAdvertiser = MCAdvertiser(name: (user?.UUID)!)
+            if keychain!.isUserStoredInKeychain() { // TODO: Update nickname in necessary                
+                nickname = parentController.nickname
+                
+                user = keychain!.getUserFromKeychain()
+                                
+                socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
+                
+                status.layer.cornerRadius = status.bounds.height / 2
+                status.layer.masksToBounds = true
+                updateStatus()
+                Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(MessagesViewController.updateStatus), userInfo: nil, repeats: true)
+                
+                parentController.socket = socket
+                parentController.user = user
+            } else if !keychain!.isUserStoredInKeychain() && parentController.nickname != "" {
+                nickname = parentController.nickname
+                
+                user = User(nickname: nickname)
+                keychain?.saveUserToKeychain(user: user!)
+                
+                socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
+                
+                status.layer.cornerRadius = status.bounds.height / 2
+                status.layer.masksToBounds = true
+                updateStatus()
+                Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(MessagesViewController.updateStatus), userInfo: nil, repeats: true)
+                
+                parentController.socket = socket
+                parentController.user = user
+            }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if let parentController = parent as? TabBarViewController, !keychain!.isUserStoredInKeychain() && parentController.nickname == ""{
+            let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nickname")
+            self.present(vc, animated: false, completion: nil)
         }
     }
 
@@ -67,8 +93,8 @@ class MessagesViewController: UIViewController {
     
     // MARK: - Handlers
     
-    func sendMessage() {
-        if let text = messageContents.text, text.characters.count > 0 {
+    func sendMessage() { // TODO: Make the send button grayed out (disabled) if no content is entered.
+        if let text = messageContents.text, text.characters.count > 0, availablePeers.count > 0 {
             messageContents.text = ""
             
             messages.append([
@@ -107,9 +133,73 @@ class MessagesViewController: UIViewController {
         socket?.connectDevice()
     }
     
+    func handleSuccessfulConnect() {
+        // MCBrowser
+        mcBrowser = MCBrowser(name: (user?.UUID)!)
+        mcBrowser?.delegate = self
+        
+        // MCAdvertiser
+        mcAdvertiser = MCAdvertiser(name: (user?.UUID)!)
+    }
+    
     func handleMessage(data: [String: String]) {
         messages.append(data)
         self.messagesTableView.reloadData()
+    }
+    
+    // MARK: - Update the status
+    
+    func getEllipseWithColor(color: UIColor, width: Double, height: Double) -> UIImage {
+        let size = CGSize(width: width, height: height)
+        
+        let rect = CGRect(x: 0, y: 0, width: width, height: height)
+        UIGraphicsBeginImageContextWithOptions(size, true, 0)
+        
+        color.setFill()
+        UIRectFill(rect)
+        
+        let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        
+        return image
+    }
+    
+    func updateConnectedPeers() {
+        socket?.getConnectedPeersCount(recieveHandler: gotPeersCount)
+    }
+    
+    func gotPeersCount(count: Int) {
+        connectedPeers.text = "\(count) (\(availablePeers.count))" // TODO: Adjust numbers that are wider than the width of the label.
+    }
+    
+    func updateStatus() {
+        if let socket = socket {
+            switch socket.getStatus() {
+            case .connected:
+                status.image = getEllipseWithColor(color: UIColor(red: 0, green: 200/255, blue: 0, alpha: 1), width: 30, height: 30)
+            case .connecting:
+                status.image = getEllipseWithColor(color: UIColor(red: 1, green: (150 / 255), blue: 0, alpha: 1), width: 30, height: 30)
+            default:
+                status.image = getEllipseWithColor(color: UIColor(red: 1, green: 0, blue: 0, alpha: 1), width: 30.0, height: 30.0)
+            }
+        }
+        
+        updateConnectedPeers()
+    }
+    
+    // MARK: - Show connected peers
+    
+    @IBAction func showConnectedPeersButtonTapped() {
+        socket?.getConnectedPeersNicknames(recieveHandler: showConnectedPeers)
+    }
+    
+    func showConnectedPeers(data: [String]) { // TODO: Make the "Show connected peers" button grayed out after the button was intially pressed and until the "ok" button of the alert was clicked.
+        let alert = UIAlertController(title: "Available peers", message: data.joined(separator: "\n "), preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alert.addAction(action)
+        
+        // TODO: Indicate which peers you see directly and which peers will get your messages.
+        present(alert, animated: true, completion: nil) // TODO: Handle error when this function is called twice, which brings up this error: "Warning: Attempt to present <UIAlertController: 0x7fea5ed801e0>  on <MCTest.MessagesViewController: 0x7fea5ed321c0> which is already presenting <UIAlertController: 0x7fea5ecd0c70> 2016-09-10 14:47:15.927 MCTest[4363:439888] Attempting to load the view of a view controller while it is deallocating is not allowed and may result in undefined behavior (<UIAlertController: 0x7fea5ed801e0>)"
     }
 
 }
@@ -131,8 +221,8 @@ extension MessagesViewController: UITextFieldDelegate {
     }
     
     func keyboardWasHidden(notification: NSNotification) {
-        let spacingFromBottom = CGFloat(8)
-            
+        let spacingFromBottom = CGFloat(8) * 2 + status.bounds.size.height // 8 for the spacing to the UIImageView, the height of the images view and another 8 for the spacing from the UIImageView to the bottom layout guide
+        
         self.bottomConstraint.constant = spacingFromBottom
         self.buttonConstraint.constant = spacingFromBottom
         
@@ -151,10 +241,6 @@ extension MessagesViewController: UITextFieldDelegate {
         sendMessage()
         
         return true
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.endEditing(true)
     }
     
 }
@@ -184,7 +270,7 @@ extension MessagesViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension MessagesViewController: MCBrowserDelegate {
     
-    func foundPeer(_ peer: MCPeerID) {
+    func foundPeer(_ peer: MCPeerID) { // TODO: Update the peer count when a peer is found or lost
         // Ignore if the browser founds the advertiser of the same device
         if (peer.displayName != user?.UUID) {
             availablePeers.append(peer.displayName)
@@ -196,8 +282,6 @@ extension MessagesViewController: MCBrowserDelegate {
     func lostPeer(_ peer: MCPeerID) {
         // Ignore if the browser founds the advertiser of the same device
         if (peer.displayName != user?.UUID) {
-            availablePeers.append(peer.displayName)
-            
             if let index = availablePeers.index(of: peer.displayName) {
                 availablePeers.remove(at: index)
             }
