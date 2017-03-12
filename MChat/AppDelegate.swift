@@ -3,7 +3,7 @@
 //  MChat
 //
 //  Created by Itai Steinherz on 23/11/2016.
-//  Copyright © 2016 ItaiSt. All rights reserved.
+//  Copyright © 2016 Itai Steinherz. All rights reserved.
 //
 
 import UIKit
