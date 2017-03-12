@@ -45,6 +45,8 @@
 		6E318D5D1DE6079700D7905E /* MChatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E318D5C1DE6079700D7905E /* MChatUITests.swift */; };
 		6E45273F1E12C3AB001B80E7 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E45273E1E12C3AB001B80E7 /* User.swift */; };
 		6E4527411E12C3D5001B80E7 /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E4527401E12C3D5001B80E7 /* SocketManager.swift */; };
+		6EB122AF1E75DA1D00DAA39F /* KeychainAccess.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EB122A01E75D95B00DAA39F /* KeychainAccess.framework */; };
+		6EB122B01E75DA1D00DAA39F /* KeychainAccess.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6EB122A01E75D95B00DAA39F /* KeychainAccess.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +64,56 @@
 			remoteGlobalIDString = 6E318D381DE6079700D7905E;
 			remoteInfo = MChat;
 		};
+		6EB1229F1E75D95B00DAA39F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 140F195C1A49D79400B0016A;
+			remoteInfo = KeychainAccess;
+		};
+		6EB122A11E75D95B00DAA39F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 140F19671A49D79500B0016A;
+			remoteInfo = KeychainAccessTests;
+		};
+		6EB122A31E75D95B00DAA39F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 14A630151D3293C700809B3F;
+			remoteInfo = TestHost;
+		};
+		6EB122AA1E75D9DD00DAA39F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 140F195B1A49D79400B0016A;
+			remoteInfo = KeychainAccess;
+		};
+		6EB122B11E75DA1D00DAA39F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 140F195B1A49D79400B0016A;
+			remoteInfo = KeychainAccess;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6EB122B31E75DA1E00DAA39F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6EB122B01E75DA1D00DAA39F /* KeychainAccess.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6E0A54511E1130B90001C095 /* NicknameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NicknameViewController.swift; sourceTree = "<group>"; };
@@ -109,6 +160,7 @@
 		6E318D5E1DE6079700D7905E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6E45273E1E12C3AB001B80E7 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = MChat/Libraries/User.swift; sourceTree = "<group>"; };
 		6E4527401E12C3D5001B80E7 /* SocketManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SocketManager.swift; path = MChat/Libraries/SocketManager.swift; sourceTree = "<group>"; };
+		6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KeychainAccess.xcodeproj; path = MChat/KeychainAccess/KeychainAccess.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6EB122AF1E75DA1D00DAA39F /* KeychainAccess.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +240,7 @@
 				6E318D501DE6079700D7905E /* MChatTests */,
 				6E318D5B1DE6079700D7905E /* MChatUITests */,
 				6E318D3A1DE6079700D7905E /* Products */,
+				6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -234,6 +288,16 @@
 			path = MChatUITests;
 			sourceTree = "<group>";
 		};
+		6EB1229A1E75D95B00DAA39F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6EB122A01E75D95B00DAA39F /* KeychainAccess.framework */,
+				6EB122A21E75D95B00DAA39F /* KeychainAccessTests.xctest */,
+				6EB122A41E75D95B00DAA39F /* TestHost.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -244,10 +308,13 @@
 				6E318D351DE6079700D7905E /* Sources */,
 				6E318D361DE6079700D7905E /* Frameworks */,
 				6E318D371DE6079700D7905E /* Resources */,
+				6EB122B31E75DA1E00DAA39F /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6EB122AB1E75D9DD00DAA39F /* PBXTargetDependency */,
+				6EB122B21E75DA1D00DAA39F /* PBXTargetDependency */,
 			);
 			name = MChat;
 			productName = MChat;
@@ -330,6 +397,12 @@
 			mainGroup = 6E318D301DE6079700D7905E;
 			productRefGroup = 6E318D3A1DE6079700D7905E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 6EB1229A1E75D95B00DAA39F /* Products */;
+					ProjectRef = 6EB122991E75D95B00DAA39F /* KeychainAccess.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				6E318D381DE6079700D7905E /* MChat */,
@@ -338,6 +411,30 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		6EB122A01E75D95B00DAA39F /* KeychainAccess.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = KeychainAccess.framework;
+			remoteRef = 6EB1229F1E75D95B00DAA39F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6EB122A21E75D95B00DAA39F /* KeychainAccessTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = KeychainAccessTests.xctest;
+			remoteRef = 6EB122A11E75D95B00DAA39F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6EB122A41E75D95B00DAA39F /* TestHost.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = TestHost.app;
+			remoteRef = 6EB122A31E75D95B00DAA39F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		6E318D371DE6079700D7905E /* Resources */ = {
@@ -435,6 +532,16 @@
 			isa = PBXTargetDependency;
 			target = 6E318D381DE6079700D7905E /* MChat */;
 			targetProxy = 6E318D591DE6079700D7905E /* PBXContainerItemProxy */;
+		};
+		6EB122AB1E75D9DD00DAA39F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = KeychainAccess;
+			targetProxy = 6EB122AA1E75D9DD00DAA39F /* PBXContainerItemProxy */;
+		};
+		6EB122B21E75DA1D00DAA39F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = KeychainAccess;
+			targetProxy = 6EB122B11E75DA1D00DAA39F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -556,6 +663,7 @@
 		6E318D621DE6079700D7905E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 2NS37RR7C6;
 				INFOPLIST_FILE = MChat/Info.plist;
@@ -569,6 +677,7 @@
 		6E318D631DE6079700D7905E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 2NS37RR7C6;
 				INFOPLIST_FILE = MChat/Info.plist;
