@@ -25,7 +25,7 @@ class NicknameViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Custom methods
     
-    func isValidNickname() -> Bool {
+    func isValidNickname() -> Bool { // TODO: Add input validation to the app and the server.
         if let text = nickname.text, text.characters.count > 0 {
             return true
         } else {

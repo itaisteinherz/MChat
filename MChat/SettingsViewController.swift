@@ -14,6 +14,7 @@ class SettingsViewController: UIViewController {
     
     var user: User? = nil
     var socket: SocketManager? = nil
+    var keychain: KeychainManager? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +24,7 @@ class SettingsViewController: UIViewController {
         if let parentController = parent as? TabBarViewController {
             user = parentController.user
             socket = parentController.socket
+            keychain = parentController.keychain
             
             nicknameTextField.text = user?.nickname
         }
@@ -36,6 +38,7 @@ class SettingsViewController: UIViewController {
     func updateNickname() {
         if let nickname = nicknameTextField.text, nickname.characters.count > 0, nickname != user?.nickname {
             user?.nickname = nickname
+            keychain?.changeNickname(newNickname: nickname)
             socket?.changeNickname(user: user!, newNickname: nickname)
         }
     }

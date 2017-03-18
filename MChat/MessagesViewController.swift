@@ -28,7 +28,7 @@ class MessagesViewController: UIViewController {
     var mcAdvertiser: MCAdvertiser? = nil
     var mcBrowser: MCBrowser? = nil
     
-    var keychain: KeychainManager? = KeychainManager(service: "com.itaist.mchat-credentials")
+    let keychain: KeychainManager = KeychainManager(service: "com.itaist.mchat-credentials") // TODO: Move the service into an external config file.
     
     var availablePeers: [String] = Array()
     var messages: [[String: String]] = Array()
@@ -46,10 +46,10 @@ class MessagesViewController: UIViewController {
         
         // Initialize user, socket, mcBrowser and mcAdvertiser
         if let parentController = parent as? TabBarViewController {
-            if keychain!.isUserStoredInKeychain() { // TODO: Update nickname in necessary                
+            if keychain.isUserStoredInKeychain() { // TODO: Update nickname in necessary
                 nickname = parentController.nickname
                 
-                user = keychain!.getUserFromKeychain()
+                user = keychain.getUserFromKeychain()
                                 
                 socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
                 
@@ -60,11 +60,12 @@ class MessagesViewController: UIViewController {
                 
                 parentController.socket = socket
                 parentController.user = user
-            } else if !keychain!.isUserStoredInKeychain() && parentController.nickname != "" {
+                parentController.keychain = keychain
+            } else if !keychain.isUserStoredInKeychain() && parentController.nickname != "" {
                 nickname = parentController.nickname
                 
                 user = User(nickname: nickname)
-                keychain?.saveUserToKeychain(user: user!)
+                keychain.saveUserToKeychain(user: user!)
                 
                 socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
                 
@@ -80,7 +81,7 @@ class MessagesViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        if let parentController = parent as? TabBarViewController, !keychain!.isUserStoredInKeychain() && parentController.nickname == ""{
+        if let parentController = parent as? TabBarViewController, !keychain.isUserStoredInKeychain() && parentController.nickname == "" {
             let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nickname")
             self.present(vc, animated: false, completion: nil)
         }
@@ -190,11 +191,16 @@ class MessagesViewController: UIViewController {
     // MARK: - Show connected peers
     
     @IBAction func showConnectedPeersButtonTapped() {
-        socket?.getConnectedPeersNicknames(recieveHandler: showConnectedPeers)
+        socket?.getConnectedPeersNicknames(peers: availablePeers, recieveHandler: showConnectedPeers)
     }
     
-    func showConnectedPeers(data: [String]) { // TODO: Make the "Show connected peers" button grayed out after the button was intially pressed and until the "ok" button of the alert was clicked.
-        let alert = UIAlertController(title: "Available peers", message: data.joined(separator: "\n "), preferredStyle: .alert)
+    func showConnectedPeers(data: [[String]]) { // TODO: Make the "Show connected peers" button grayed out after the button was intially pressed and until the "ok" button of the alert was clicked.
+        let dbPeers = data[0]
+        let directPeers = data[1]
+        
+        let message = "Peers seen directly:\n\(directPeers.joined(separator: "\n"))\n\nPeers in your chatroom:\n\(dbPeers.joined(separator: "\n"))"
+        
+        let alert = UIAlertController(title: "Connected peers", message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default, handler: nil)
         alert.addAction(action)
         
@@ -272,7 +278,7 @@ extension MessagesViewController: MCBrowserDelegate {
     
     func foundPeer(_ peer: MCPeerID) { // TODO: Update the peer count when a peer is found or lost
         // Ignore if the browser founds the advertiser of the same device
-        if (peer.displayName != user?.UUID) {
+        if (peer.displayName != user?.UUID && availablePeers.index(of: peer.displayName) == nil) { // TODO: Check if this is the best solution for ignoring peers that were already seen. Also, fix issue where when the app goes to the background and then returns to an active state, the app still thinks the previous peers are still connected although they may not be.
             availablePeers.append(peer.displayName)
             
             socket?.availablePeersChanged(change: peer.displayName, isAddition: true, availablePeers: availablePeers)

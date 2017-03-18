@@ -77,7 +77,7 @@ class SocketManager: NSObject {
                 ])
         }
     }
-    
+
     func getConnectedPeersCount(recieveHandler: @escaping ((Int) -> Void)) {
         _runOnConnect { 
             self.socket.emit("get_connected_peers_count", self.user.serializeForAuthentication())
@@ -91,16 +91,44 @@ class SocketManager: NSObject {
         }
     }
     
-    func getConnectedPeersNicknames(recieveHandler: @escaping (([String]) -> Void)) {
+    func getConnectedPeersNicknames(peers: [String], recieveHandler: @escaping (([[String]]) -> Void)) {
         _runOnConnect { 
             self.socket.emit("get_connected_peers_nicknames", self.user.serializeForAuthentication())
+            self.socket.emit("get_nicknames_of_peers", [
+                "UUID": self.user.UUID,
+                "passphrase": self.user.passphrase,
+                "peers": peers
+                ])
+        }
+        
+        var dbData: [String]? = nil
+        var directData: [String]? = nil
+        
+        let dbHandler = { (data: [Any], ack: SocketAckEmitter) in
+            dbData = data[0] as? [String]
+            
+            if directData != nil {
+                recieveHandler([dbData!, directData!])
+            }
+        }
+        
+        let directHandler = { (data: [Any], ack: SocketAckEmitter) in
+            directData = data[0] as? [String]
+            
+            if dbData != nil {
+                recieveHandler([dbData!, directData!])
+            }
         }
         
         if handledEvents.index(of: "resolved_nicknames") == nil {
-            socket.on("resolved_nicknames") { data, ack in
-                recieveHandler(data[0] as! [String])
-            }
+            socket.on("resolved_nicknames", callback: dbHandler)
+
             handledEvents.append("resolved_nicknames")
+        }
+        
+        if handledEvents.index(of: "resolved_nicknames_of_peers") == nil {
+            socket.on("resolved_nicknames_of_peers", callback: directHandler)
+            handledEvents.append("resolved_nicknames_of_peers")
         }
     }
     

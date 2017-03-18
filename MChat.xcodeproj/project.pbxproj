@@ -194,11 +194,11 @@
 		6E0A54591E113E060001C095 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				6EB122B41E75DAEC00DAA39F /* KeychainManager.swift */,
 				6E0A54911E113F200001C095 /* MCBrowser.swift */,
 				6E0A548F1E113F190001C095 /* MCAdvertiser.swift */,
 				6E45273E1E12C3AB001B80E7 /* User.swift */,
 				6E4527401E12C3D5001B80E7 /* SocketManager.swift */,
+				6EB122B41E75DAEC00DAA39F /* KeychainManager.swift */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";

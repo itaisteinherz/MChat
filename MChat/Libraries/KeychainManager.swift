@@ -29,6 +29,10 @@ class KeychainManager: NSObject {
         keychain["passphrase"] = user.passphrase
     }
     
+    func changeNickname(newNickname: String) {
+        keychain["nickname"] = newNickname
+    }
+    
     func getUserFromKeychain() -> User? {
         if let nickname = keychain["nickname"], let UUID = keychain["UUID"], let passphrase = keychain["passphrase"] {
             return User(nickname: nickname, UUID: UUID, passphrase: passphrase)

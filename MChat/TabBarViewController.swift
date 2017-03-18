@@ -14,6 +14,7 @@ class TabBarViewController: UITabBarController {
     
     var user: User? = nil
     var socket: SocketManager? = nil
+    var keychain: KeychainManager? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()

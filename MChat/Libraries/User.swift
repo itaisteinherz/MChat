@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class User: CustomStringConvertible, CustomDebugStringConvertible {
+class User: CustomStringConvertible {
     
     // MARK: - Variable initialization
     
@@ -17,13 +17,9 @@ class User: CustomStringConvertible, CustomDebugStringConvertible {
     var UUID = ""
     var passphrase = ""
     
-    // MARK: - CustomStringConvertible and CustomDebugStringConvertible
+    // MARK: - CustomStringConvertible
     
     var description: String {
-        return "<User: nickname = \(nickname) UUID = \(UUID) passphrase = \(passphrase)>"
-    }
-    
-    var debugDescription: String {
         return "<User: nickname = \(nickname) UUID = \(UUID) passphrase = \(passphrase)>"
     }
     
