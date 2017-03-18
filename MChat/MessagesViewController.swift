@@ -32,7 +32,7 @@ class MessagesViewController: UIViewController {
     
     var availablePeers: [String] = Array()
     var messages: [[String: String]] = Array()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -40,43 +40,37 @@ class MessagesViewController: UIViewController {
         
         // Add observers for the UIKeyboardWillShow and UIKeyboardWillHide events
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWasShown), name:NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil) // TODO: Check if I can use the `scrollViewWillBeginDragging` function to make the text field movement smoother
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWasHidden), name:NSNotification.Name.UIKeyboardWillHide, object: nil)
+        // Dismiss the keyboard when the user touches the screen
+        
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(MessagesViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        
+        view.addGestureRecognizer(tap)
         
         // Initialize user, socket, mcBrowser and mcAdvertiser
         if let parentController = parent as? TabBarViewController {
+            nickname = parentController.nickname
+
             if keychain.isUserStoredInKeychain() { // TODO: Update nickname in necessary
-                nickname = parentController.nickname
-                
                 user = keychain.getUserFromKeychain()
-                                
-                socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
-                
-                status.layer.cornerRadius = status.bounds.height / 2
-                status.layer.masksToBounds = true
-                updateStatus()
-                Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(MessagesViewController.updateStatus), userInfo: nil, repeats: true)
-                
-                parentController.socket = socket
-                parentController.user = user
-                parentController.keychain = keychain
             } else if !keychain.isUserStoredInKeychain() && parentController.nickname != "" {
-                nickname = parentController.nickname
-                
                 user = User(nickname: nickname)
                 keychain.saveUserToKeychain(user: user!)
-                
-                socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
-                
-                status.layer.cornerRadius = status.bounds.height / 2
-                status.layer.masksToBounds = true
-                updateStatus()
-                Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(MessagesViewController.updateStatus), userInfo: nil, repeats: true)
-                
-                parentController.socket = socket
-                parentController.user = user
             }
+            
+            socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
+            
+            status.layer.cornerRadius = status.bounds.height / 2
+            status.layer.masksToBounds = true
+            updateStatus()
+            Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(MessagesViewController.updateStatus), userInfo: nil, repeats: true)
+            
+            parentController.socket = socket
+            parentController.user = user
+            parentController.keychain = keychain
         }
     }
     
@@ -212,7 +206,7 @@ class MessagesViewController: UIViewController {
 
 extension MessagesViewController: UITextFieldDelegate {
     
-    func keyboardWasShown(notification: NSNotification) {
+    func keyboardWillShow(notification: NSNotification) {
         let info = notification.userInfo!
         let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         
@@ -226,7 +220,7 @@ extension MessagesViewController: UITextFieldDelegate {
         }
     }
     
-    func keyboardWasHidden(notification: NSNotification) {
+    func keyboardWillHide(notification: NSNotification) {
         let spacingFromBottom = CGFloat(8) * 2 + status.bounds.size.height // 8 for the spacing to the UIImageView, the height of the images view and another 8 for the spacing from the UIImageView to the bottom layout guide
         
         self.bottomConstraint.constant = spacingFromBottom
@@ -237,13 +231,15 @@ extension MessagesViewController: UITextFieldDelegate {
         }
     }
     
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.resignFirstResponder()
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        
         sendMessage()
         
         return true
