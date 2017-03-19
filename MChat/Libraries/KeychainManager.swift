@@ -42,7 +42,7 @@ class KeychainManager: NSObject {
     }
     
     func isUserStoredInKeychain() -> Bool {
-        if let UUID = keychain["UUID"], UUID != "" {
+        if let UUID = keychain["UUID"], UUID != "" { // TODO: Check if the `UUID != ""` check is actually necessary
             return true
         }
         

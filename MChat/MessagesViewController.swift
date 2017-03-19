@@ -54,11 +54,24 @@ class MessagesViewController: UIViewController {
         if let parentController = parent as? TabBarViewController {
             nickname = parentController.nickname
 
-            if keychain.isUserStoredInKeychain() { // TODO: Update nickname in necessary
+            if keychain.isUserStoredInKeychain() && UserDefaults.standard.bool(forKey: "appInstalled") == true { // TODO: Update the nickname stored in the server if necessary.
                 user = keychain.getUserFromKeychain()
+            } else if keychain.isUserStoredInKeychain() && !UserDefaults.standard.bool(forKey: "appInstalled") && parentController.nickname != "" {
+                user = keychain.getUserFromKeychain()
+                user?.nickname = nickname
+                
+                keychain.changeNickname(newNickname: nickname)
+                
+                UserDefaults.standard.set(true, forKey: "appInstalled") // TODO: Move the key into an external config file.
+                UserDefaults.standard.synchronize()
             } else if !keychain.isUserStoredInKeychain() && parentController.nickname != "" {
                 user = User(nickname: nickname)
                 keychain.saveUserToKeychain(user: user!)
+                
+                UserDefaults.standard.set(true, forKey: "appInstalled")
+                UserDefaults.standard.synchronize()
+            } else {
+                return
             }
             
             socket = SocketManager(URL: "https://itaist.ga:1443", User: user!, connectionHandler: handleConnection, successfulConnectionHandler: handleSuccessfulConnect, recievedMessageHandler: handleMessage)
@@ -75,9 +88,14 @@ class MessagesViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        if let parentController = parent as? TabBarViewController, !keychain.isUserStoredInKeychain() && parentController.nickname == "" {
-            let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nickname")
-            self.present(vc, animated: false, completion: nil)
+        if let parentController = parent as? TabBarViewController {
+            if !keychain.isUserStoredInKeychain() && parentController.nickname == "" {
+                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nickname")
+                self.present(vc, animated: false, completion: nil)
+            } else if keychain.isUserStoredInKeychain() && !UserDefaults.standard.bool(forKey: "appInstalled") && parentController.nickname == "" {
+                let vc = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "Nickname")
+                self.present(vc, animated: false, completion: nil)
+            }
         }
     }
 
