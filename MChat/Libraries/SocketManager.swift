@@ -91,7 +91,7 @@ class SocketManager: NSObject {
         }
     }
     
-    func getConnectedPeersNicknames(peers: [String], recieveHandler: @escaping (([[String]]) -> Void)) {
+    func getConnectedPeersNicknames(peers: [String], recieveHandler: @escaping (([String], [String]) -> Void)) {
         _runOnConnect { 
             self.socket.emit("get_connected_peers_nicknames", self.user.serializeForAuthentication())
             self.socket.emit("get_nicknames_of_peers", [
@@ -107,16 +107,16 @@ class SocketManager: NSObject {
         let dbHandler = { (data: [Any], ack: SocketAckEmitter) in
             dbData = data[0] as? [String]
             
-            if directData != nil {
-                recieveHandler([dbData!, directData!])
+            if let directData = directData {
+                recieveHandler(directData, dbData!)
             }
         }
         
         let directHandler = { (data: [Any], ack: SocketAckEmitter) in
             directData = data[0] as? [String]
             
-            if dbData != nil {
-                recieveHandler([dbData!, directData!])
+            if let dbData = dbData {
+                recieveHandler(directData!, dbData)
             }
         }
         

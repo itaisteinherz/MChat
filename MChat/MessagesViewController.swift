@@ -203,14 +203,14 @@ class MessagesViewController: UIViewController {
     // MARK: - Show connected peers
     
     @IBAction func showConnectedPeersButtonTapped() {
-        socket?.getConnectedPeersNicknames(peers: availablePeers, recieveHandler: showConnectedPeers)
+        socket?.getConnectedPeersNicknames(peers: availablePeers, recieveHandler: showConnectedPeers) // TODO: Check if I shouldn't even ask the server for the nicknames if `availablePeers.count` is 0
     }
     
-    func showConnectedPeers(data: [[String]]) { // TODO: Make the "Show connected peers" button grayed out after the button was intially pressed and until the "ok" button of the alert was clicked.
-        let dbPeers = data[0]
-        let directPeers = data[1]
+    func showConnectedPeers(directPeers: [String], dbPeers: [String]) { // TODO: Make the "Show connected peers" button grayed out after the button was intially pressed and until the "ok" button of the alert was clicked.
+        let directPeersString = directPeers.count > 0 ? directPeers.joined(separator: "\n") : "No peers seen directly"
+        let dbPeersString = directPeers.count > 0 ? dbPeers.joined(separator: "\n") : "No peers in your chatroom"
         
-        let message = "Peers seen directly:\n\(directPeers.joined(separator: "\n"))\n\nPeers in your chatroom:\n\(dbPeers.joined(separator: "\n"))"
+        let message = "Peers seen directly:\n\(directPeersString)\n\nPeers in your chatroom:\n\(dbPeersString)"
         
         let alert = UIAlertController(title: "Connected peers", message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default, handler: nil)
