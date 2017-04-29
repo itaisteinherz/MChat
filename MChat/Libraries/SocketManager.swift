@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SocketIO
 
 class SocketManager: NSObject {
     

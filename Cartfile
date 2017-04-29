@@ -1,0 +1,2 @@
+github "kishikawakatsumi/KeychainAccess" ~> 3.0.2
+github "socketio/socket.io-client-swift" ~> 8.3.3
