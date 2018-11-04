@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="uBh-rz-bLa">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="uBh-rz-bLa">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="HelveticaNeueLights.ttc">
+            <string>HelveticaNeue-Light</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Nickname View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -126,6 +131,7 @@
                             <constraint firstItem="kgt-Ej-ru5" firstAttribute="centerX" secondItem="spx-m9-R3w" secondAttribute="centerX" id="9Sg-cM-iER"/>
                             <constraint firstAttribute="leadingMargin" secondItem="Fom-AU-ZuA" secondAttribute="leading" id="T00-7X-4hb"/>
                             <constraint firstAttribute="leadingMargin" secondItem="n6i-pr-AOg" secondAttribute="leading" id="VBL-gG-Ai5"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="n6i-pr-AOg" secondAttribute="trailingMargin" id="dU4-sn-0Dv"/>
                             <constraint firstItem="n6i-pr-AOg" firstAttribute="top" secondItem="NOE-hy-QHC" secondAttribute="bottom" constant="47" id="jue-Vl-3ud"/>
                             <constraint firstItem="Fom-AU-ZuA" firstAttribute="top" secondItem="n6i-pr-AOg" secondAttribute="bottom" constant="22" id="mar-AV-XdE"/>
                             <constraint firstItem="kgt-Ej-ru5" firstAttribute="top" secondItem="Fom-AU-ZuA" secondAttribute="bottom" constant="138" id="rNq-5O-YPX"/>
@@ -167,14 +173,14 @@
                                 </connections>
                             </textField>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="PdC-4N-SKV">
-                                <rect key="frame" x="16" y="28" width="343" height="506"/>
+                                <rect key="frame" x="16" y="48" width="343" height="486"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MessageCell" id="rlt-1S-zgG">
                                         <rect key="frame" x="0.0" y="28" width="343" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rlt-1S-zgG" id="1IT-rC-Cr1">
-                                            <rect key="frame" x="0.0" y="0.0" width="343" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="343" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
